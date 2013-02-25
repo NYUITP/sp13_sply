@@ -1,0 +1,3 @@
+{"domain": "needsupply.com","url": "http://needsupply.com/mens/raincoating-combo.html","xpath": "/html/body/div[2]/form/div/div/div[2]/h3/span/text()"}
+{"domain": "www.manufactum.com","url": "http://www.manufactum.com/steel-firewood-holder-p1464708/","xpath": "/html/body/div/div[2]/div[1]/div[2]/form/div[3]/div[2]/fieldset/div[1]/p/strong/span/text()"}
+{"domain": "www.urbanoutfitters.com","url": "http://www.urbanoutfitters.com/urban/catalog/productdetail.jsp?id=26669705&parentid=M_ACC_UNDERWEAR","xpath": "/html[1]/body/div[2]/div[2]/div[1]/h2[2]/span[1]/text()"}
