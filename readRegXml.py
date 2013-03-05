@@ -15,7 +15,7 @@ import xml.etree.ElementTree as ET
 #Read xml file
 def load_xml_file(fileName):
     #get root node
-    root = ET.parse(fileName).getroot() 
+    root = ET.parse(fileName).getroot()
 
     #get root info
     intro = root.find('intro').text
@@ -23,7 +23,7 @@ def load_xml_file(fileName):
 
     #get all list
     all_users = root.findall('list')
-    
+
     #for all node, get following info
     for user in all_users:
 
@@ -33,7 +33,7 @@ def load_xml_file(fileName):
 
         product_status = user.find('status').text
 
-        print product_price,product_name,product_status
+        print product_price, product_name, product_status
 
 if __name__ == '__main__':
 
