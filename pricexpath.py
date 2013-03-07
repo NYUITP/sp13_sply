@@ -58,7 +58,7 @@ def xpath_compare(imagexpath, canxpath=[]):
             closest = close_degree
             truexpath = xpath
 
-        return truexpath
+    return truexpath
 
         
 
