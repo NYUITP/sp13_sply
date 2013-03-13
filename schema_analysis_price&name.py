@@ -1,11 +1,5 @@
 #!/usr/local/bin python
 #coding=utf-8
-#author: Zheng Qin
-#desc: Read price from schema html page.
-#-----------------------
-#2013-03-07 created
-
-#----------------------
 
 import urllib2
 # from lxml import *
@@ -53,6 +47,12 @@ def get_all_prices(url):
 	for price in prices:
 		print price.text
 
+
+def get_all_products(url):
+	urlopener = urllib2.urlopen(url)
+	page_html = urlopener.read()
+	page = etree.HTML(page_html.lower().decode('utf-8'))
+	products = page.xpath('//*[@itemprop="name"]')
 	# for name in names:
 	# 	print name.text
 
@@ -90,25 +90,15 @@ def get_all_prices(url):
 # def get_domain_name():
 # 	pass
 
-# connect to the database and get 
-# def load_dbconnected_profile(domain_name):
-#     content = {}
 
-#     root = minidom.parse(<span style="background-color: rgb(255, 255, 255); ">domain_name</span>)
-#     table = root.getElementsByTagName("table")[0]
+def if_normalized_page(url):
+	urlopener = urllib2.urlopen(url)
+	page_html = urlopener.read()
+	page = etree.HTML(page_html.lower().decode('utf-8'))
+	flag = page.xpath('//*[@itemprop="price"]')
+	
 
-#   #read dbname and table name.
-#     table_name = table.getAttribute("name")
-#     db_name = table.getAttribute("db_name")
 
-#     if len(table_name) > 0 and len(db_name) > 0:
-#      db_sql = "create database if not exists `" + db_name +"`; use " + db_name + ";" 
-#      table_drop_sql = "drop " + table_name + " if exists " + table_name + ";" 
-#      content.update({"db_sql" : db_sql})
-#      content.update({"table_sql" : table_drop_sql })
-#   else:
-#      print "Error:attribute is not define well!  db_name=" + db_name + " ;table_name=" + table_name
-#      sys.exit(1)
 
 
 if __name__ == '__main__':
