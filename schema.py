@@ -24,9 +24,6 @@ def schema(weburl):
 		print "URL not exists"
 		print " "
 
-	
-
-
 def is_url_available(url):
 	host, path = urlparse.urlsplit(url)[1:3]
 	found = 0
@@ -44,18 +41,12 @@ def is_url_available(url):
 	return found
 
 
-
 def is_url_schema(url):
-
 	flag = urlreader(url).xpath('//*[@itemprop="name"]')
-
 	result = 1
-
 	if (flag == []):
 		result = 0
-
 	return result
-
 
 
 def urlreader(url):
@@ -65,20 +56,14 @@ def urlreader(url):
 
 
 def get_product_price(url):
-	
 	prices = urlreader(url).xpath('//*[@itemprop="price"]')
 	price = prices[0]
-
 	return price.text
 
 
-
 def get_product_name(url):
-
 	names = urlreader(url).xpath('//*[@itemprop ="name"]')
-
 	name = names[0]
-
 	return name.text
 
 
