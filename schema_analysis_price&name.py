@@ -6,23 +6,6 @@ import lxml.etree as etree
 import httplib
 import urlparse
 
-# html = '''
-# <html>
-# 　　<head>
-# 　　</head>
-# 　　<body>
-# 　　　　<h1 class="heading">Top News</h1>
-# 　　　　<p style="font-size: 200%">World News only on this page</p>
-# 　　　　Ah, and here's some more text, by the way.
-# 　　　　<p>... and this is a parsed fragment ...</p>
-# 		<div class="price hilight" itemprop="price" data-bntrack="Price" data-bntrack-event="click">$19.99</div>
-#         <div class="price-info">
-# 　　</body>
-# </html>
-# '''
-
-
-
 def is_url_available(url):
 	host, path = urlparse.urlsplit(url)[1:3]
 	found = 0
@@ -39,47 +22,34 @@ def is_url_available(url):
 		print e.__class__,  e, url
 	return found
 
-
-
 def is_url_schema(url):
-
 	flag = urlreader(url).xpath('//*[@itemprop="name"]')
-
 	result = 1
-
 	if (flag == []):
 		result = 0
-
 	return result
 
-
+def is_url_instock(url):
+	flag = urlreader(url).xpath('//*[@itemprop="price"]')
+	result = 1
+	if (flag == []):
+		result = 0
+	return result
 
 def urlreader(url):
 	page_html = urllib2.urlopen(url).read()
-	page = etree.HTML(page_html.lower().decode('utf-8'))
+	page = etree.HTML(page_html.lower())
 	return page
 
-
 def get_product_price(url):
-	
 	prices = urlreader(url).xpath('//*[@itemprop="price"]')
 	price = prices[0]
-
 	return price.text
 
-
-
 def get_product_name(url):
-
 	names = urlreader(url).xpath('//*[@itemprop ="name"]')
-
 	name = names[0]
-
 	return name.text
-
-
-
-
 
 
 # check if the url is a schema style
@@ -122,16 +92,7 @@ if __name__ == '__main__':
 	'http://www.barnesandnoble.com/p/home-gift-portable-stereo-speaker-system-in-black/25550011?ean=47532895520&isbn=47532895520123123123',
 	'http://www.manufactum.com/devold-nansen-troyer-style-pullover-p1465134/',
 	'http://www.barnesandnoble.com/p/elan-passport-wallet-for-iphone-4-in-platinum-with-lanyard/25218472?ean=685387307999&isbn=685387307999',
-	'http://www.barnesandnoble.com/p/home-gift-bookbook-case-for-iphone-4-4s-classic-black/25390388?ean=851522002429&isbn=851522002429',
-	'http://www.barnesandnoble.com/p/urbanears-plattan-on-ear-stereo-headphones-tomato/22221326?ean=7340055303408&isbn=7340055303408',
-	'http://www.manufactum.com/petromax-high-powered-lamp-p1465208/',
-	'http://www.barnesandnoble.com/p/urbanears-medis-in-ear-stereo-headphones-forest/25236999?ean=7340055306850&isbn=7340055306850',
-	'http://www.barnesandnoble.com/p/home-gift-urbanears-bagis-in-ear-stereo-headphones-dark-grey/25211718?ean=7340055303569&isbn=7340055303569',
-	'http://www.barnesandnoble.com/p/home-gift-wire-bound-sketch-book-with-paintbrush-icons/12602044?ean=9780641545948',
-	'http://www.jcrew.com/womens_category/shorts/novelty/PRDOVR~57806/5780612312312313',
-	'http://www.barnesandnoble.com/p/home-gift-ihome-idm3sc-20-speaker-dock-system-for-ipad-iphone-ipod-silver/25381332?ean=47532896374',
-	'http://www.barnesandnoble.com/p/home-gift-urbanears-bagis-in-ear-stereo-headphones-white/22221327?ean=7340055303538',
-	'http://www.manufactum.com/petromax-high-powered-lamp-p1465208/'
+	'http://www.bbq.com/item_name_Kamado-Joe-ClassicJoe-Ceramic-Kamado-Grill-On-Cart-Red_path_9994_item_2854890.html'
 	]
 
 
@@ -139,9 +100,12 @@ if __name__ == '__main__':
 	for url in urls:
 		if is_url_available(url):
 			if is_url_schema(url):
-				print (get_product_name(url) + " is " + get_product_price(url))
-				# print get_product_price(url)
-				print " "
+				if is_url_instock(url):
+					print (get_product_name(url) + " is " + get_product_price(url))
+					print " "
+				else:
+					print (get_product_name(url)+" is out of stock!")
+					print " "
 			else:
 				print ("***"+url+"***  ")
 				print "This is not a Schema type website!"
@@ -149,9 +113,5 @@ if __name__ == '__main__':
 		else:
 			print "URL not exists"
 			print " "
-		
-		
-
-
 
 	# outfile.close()
