@@ -6,6 +6,11 @@ import lxml.etree as etree
 import httplib
 import urlparse
 
+def urlreader(url):
+	page_html = urllib2.urlopen(url).read()
+	page = etree.HTML(page_html.lower())
+	return page
+
 def is_url_available(url):
 	host, path = urlparse.urlsplit(url)[1:3]
 	found = 0
@@ -36,20 +41,15 @@ def is_url_instock(page):
 		result = 0
 	return result
 
-def urlreader(url):
-	page_html = urllib2.urlopen(url).read()
-	page = etree.HTML(page_html.lower())
-	return page
-
 def get_product_price(page):
 	prices = page.xpath('//*[@itemprop="price"]')
 	price = prices[0]
-	return price.text
+	return price.text.strip()
 
 def get_product_name(page):
 	names = page.xpath('//*[@itemprop ="name"]')
 	name = names[0]
-	return name.text
+	return name.text.strip()
 
 
 # check if the url is a schema style
@@ -113,10 +113,3 @@ if __name__ == '__main__':
 		else:
 			print "URL not exists"
 			print " "
-
-	# for url in urls:
-	# 	if is_url_available(url):
-	# 		page = etree.HTML(urllib2.urlopen(url).read().lower())
-
-
-	# outfile.close()
