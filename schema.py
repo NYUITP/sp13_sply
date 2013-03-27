@@ -10,20 +10,56 @@ import urlparse
 
 @route('/schema/<url:path>')
 
+# def schema(url):
+	# if is_url_available(url):
+	# 	page = urlreader(url)
+	# 	if is_url_schema(page):
+	# 		print (get_product_name(page) + " is " + get_product_price(page))
+	# 		# print get_product_price(url)
+	# 		print " "
+	# 	else:
+	# 		print ("***"+weburl+"***  ")
+	# 		print "This is not a Schema type website!"
+	# 		print " "
+	# else:
+	# 	print "URL not exists"
+	# 	print " "
+
 def schema(url):
 	if is_url_available(url):
 		page = urlreader(url)
 		if is_url_schema(page):
-			print (get_product_name(page) + " is " + get_product_price(page))
-			# print get_product_price(url)
-			print " "
+			if is_url_instock(page):
+				# print (get_product_name(page) + " is " + get_product_price(page))
+				# print " "
+				product_name = get_product_name(page)
+				product_price = get_product_price(page)
+				return product_name + " is " + product_price
+			# elif is_product_onsale(page):
+			# 	print (get_product_name(page) + " is ON SALE!! The on sale price is " + get_onsale_price(page))
+			# 	print " "
+			else:
+				if is_product_onsale(page):
+					# print (get_product_name(page) + " is ON SALE!! The on sale price is " + get_onsale_price(page))
+					# print " "
+					product_name = get_product_name(page)
+					onsale_price = get_onsale_price(page)
+					return product_name + " is ON SALE!! The on sale price is " + onsale_price
+				else:
+					# print (get_product_name(page)+" is out of stock!")
+					# print " "
+					product_name = get_product_name(page)
+					return product_name + " is out of stock!"
 		else:
-			print ("***"+weburl+"***  ")
-			print "This is not a Schema type website!"
-			print " "
+			# print ("***"+url+"***  ")
+			# print "This is not a Schema type website!"
+			# print " "
+			return "This is not a Schema type website!"
 	else:
-		print "URL not exists"
-		print " "
+		# print "URL not exists"
+		# print " "
+		return "URL not exists"
+
 
 def urlreader(url):
 	page_html = urllib2.urlopen(url).read()
@@ -60,6 +96,18 @@ def is_url_instock(page):
 		result = 0
 	return result
 
+def is_product_onsale(page):
+	flag = page.xpath('//*[@id="ourprice"]')
+	result = 1
+	if (flag == []):
+		result = 0
+	return result
+
+def get_onsale_price(page):
+	prices = page.xpath('//*[@id="ourprice"]')
+	price = prices[0]
+	return price.text.strip()
+
 def get_product_price(page):
 	prices = page.xpath('//*[@itemprop="price"]')
 	price = prices[0]
@@ -71,4 +119,4 @@ def get_product_name(page):
 	return name.text.strip()
 
 
-run (host='localhost',port = 8080, debug = True)
+run (host='localhost',port = 8082, debug = True)
