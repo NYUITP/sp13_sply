@@ -22,15 +22,15 @@ def is_url_available(url):
 		print e.__class__,  e, url
 	return found
 
-def is_url_schema(url):
-	flag = urlreader(url).xpath('//*[@itemprop="name"]')
+def is_url_schema(page):
+	flag = page.xpath('//*[@itemprop="name"]')
 	result = 1
 	if (flag == []):
 		result = 0
 	return result
 
-def is_url_instock(url):
-	flag = urlreader(url).xpath('//*[@itemprop="price"]')
+def is_url_instock(page):
+	flag = page.xpath('//*[@itemprop="price"]')
 	result = 1
 	if (flag == []):
 		result = 0
@@ -41,13 +41,13 @@ def urlreader(url):
 	page = etree.HTML(page_html.lower())
 	return page
 
-def get_product_price(url):
-	prices = urlreader(url).xpath('//*[@itemprop="price"]')
+def get_product_price(page):
+	prices = page.xpath('//*[@itemprop="price"]')
 	price = prices[0]
 	return price.text
 
-def get_product_name(url):
-	names = urlreader(url).xpath('//*[@itemprop ="name"]')
+def get_product_name(page):
+	names = page.xpath('//*[@itemprop ="name"]')
 	name = names[0]
 	return name.text
 
@@ -80,7 +80,6 @@ def get_product_name(url):
 #      print "Error:attribute is not define well!  db_name=" + db_name + " ;table_name=" + table_name
 #      sys.exit(1)
 
-
 if __name__ == '__main__':
 	urls = [
 	'http://www.barnesandnoble.com/p/home-gift-ihome-ihm60-20-rechargable-mini-speaker-gray/25547311?ean=47532896213&isbn=47532896213&urlkeywords=ihome+ihm60+20+rechargable+mini+speaker+gray',
@@ -99,12 +98,13 @@ if __name__ == '__main__':
 	# outfile = open(‘schemaPrices.txt’, ‘w’)
 	for url in urls:
 		if is_url_available(url):
-			if is_url_schema(url):
-				if is_url_instock(url):
-					print (get_product_name(url) + " is " + get_product_price(url))
+			page = urlreader(url)
+			if is_url_schema(page):
+				if is_url_instock(page):
+					print (get_product_name(page) + " is " + get_product_price(page))
 					print " "
 				else:
-					print (get_product_name(url)+" is out of stock!")
+					print (get_product_name(page)+" is out of stock!")
 					print " "
 			else:
 				print ("***"+url+"***  ")
@@ -113,5 +113,10 @@ if __name__ == '__main__':
 		else:
 			print "URL not exists"
 			print " "
+
+	# for url in urls:
+	# 	if is_url_available(url):
+	# 		page = etree.HTML(urllib2.urlopen(url).read().lower())
+
 
 	# outfile.close()
