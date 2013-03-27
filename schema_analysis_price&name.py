@@ -41,6 +41,18 @@ def is_url_instock(page):
 		result = 0
 	return result
 
+def is_product_onsale(page):
+	flag = page.xpath('//*[@id="ourprice"]')
+	result = 1
+	if (flag == []):
+		result = 0
+	return result
+
+def get_onsale_price(page):
+	prices = page.xpath('//*[@id="ourprice"]')
+	price = prices[0]
+	return price.text.strip()
+
 def get_product_price(page):
 	prices = page.xpath('//*[@itemprop="price"]')
 	price = prices[0]
@@ -88,10 +100,14 @@ if __name__ == '__main__':
 	'http://www.barnesandnoble.com/p/home-gift-ihome-colortunes-noise-isolating-headphones-black/25210773?ean=47532897302&isbn=47532897302',
 	'http://www.manufactum.com/maplewood-foldable-wardrobe-p1465202/'
 	'http://www.barnesandnoble.com/p/home-gift-ihome-ib40b-over-the-ear-headphones-with-volume-control-black/22201677?ean=47532895629&isbn=47532895629',
+	'http://www.bbq.com/item_name_Cookshack-AmeriQue-Electric-Barbecue-Smoker_path_7122_item_2121460.html',
+	'http://www.bbq.com/item_name_Cookshack-Smokette-Elite-Electric-BBQ-Smoker_path_7122_item_2512310.html',
+	'http://www.bbq.com/item_name_Smokin-Tex-1400-Pro-Series-Electric-BBQ-Smoker_path_7122_item_1530808.html',
 	'http://www.barnesandnoble.com/p/home-gift-portable-stereo-speaker-system-in-black/25550011?ean=47532895520&isbn=47532895520123123123',
 	'http://www.manufactum.com/devold-nansen-troyer-style-pullover-p1465134/',
 	'http://www.barnesandnoble.com/p/elan-passport-wallet-for-iphone-4-in-platinum-with-lanyard/25218472?ean=685387307999&isbn=685387307999',
-	'http://www.bbq.com/item_name_Kamado-Joe-ClassicJoe-Ceramic-Kamado-Grill-On-Cart-Red_path_9994_item_2854890.html'
+	'http://www.bbq.com/item_name_Kamado-Joe-ClassicJoe-Ceramic-Kamado-Grill-On-Cart-Black_path_7122_item_2854892.html'
+
 	]
 
 
@@ -103,9 +119,16 @@ if __name__ == '__main__':
 				if is_url_instock(page):
 					print (get_product_name(page) + " is " + get_product_price(page))
 					print " "
+				# elif is_product_onsale(page):
+				# 	print (get_product_name(page) + " is ON SALE!! The on sale price is " + get_onsale_price(page))
+				# 	print " "
 				else:
-					print (get_product_name(page)+" is out of stock!")
-					print " "
+					if is_product_onsale(page):
+						print (get_product_name(page) + " is ON SALE!! The on sale price is " + get_onsale_price(page))
+						print " "
+					else:
+						print (get_product_name(page)+" is out of stock!")
+						print " "
 			else:
 				print ("***"+url+"***  ")
 				print "This is not a Schema type website!"
