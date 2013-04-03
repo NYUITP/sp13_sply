@@ -1,4 +1,4 @@
-from bottle import route, run
+#from bottle import route, run
 import lxml.html as HTML
 import lxml.etree as etree
 import difflib
@@ -7,7 +7,7 @@ import urllib2
 import cookielib
 from pprint import pprint
 import  re
-@route('/xpath/<weburl:path>,<imgurl:path>')
+#@route('/xpath/<weburl:path>,<imgurl:path>')
 def xpath(weburl,imgurl):
     keywordlist=['Euro','USD','$','RMB']
     statuslist=['in stock','available']
@@ -26,7 +26,7 @@ def xpath(weburl,imgurl):
     productprice=""
     productstatus=""
     opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookielib.CookieJar()))
-    weburl = "http://"+weburl
+    #weburl = "http://"+weburl
    
     f = opener.open(weburl)
     s = f.read()
@@ -34,8 +34,7 @@ def xpath(weburl,imgurl):
 
     hdoc = HTML.fromstring(s)
     htree = etree.ElementTree(hdoc)
-    imgurl = "http://"+imgurl
-    print "imgurl:"+imgurl
+    #imgurl = "http://"+imgurl
     image_locations = htree.xpath('//img[@src="'+imgurl+'"]')
     
     
@@ -48,7 +47,7 @@ def xpath(weburl,imgurl):
         imgresults.append(htree.getpath(Elem_location))
     for result in imgresults:
         imgxpath = result
-        print imgxpath
+        #print imgxpath
         
     
     for keyword in keywordlist:
@@ -75,6 +74,7 @@ def xpath(weburl,imgurl):
     for Elem_location in locations:
         results.append(htree.getpath(Elem_location))
         price.append(Elem_location.text)
+        print Elem_location.text
         pricestr = str(price)
     pricestr= pricestr[pricestr.find("\'")+1:pricestr.rfind("\'")]
     if pricestr.isdigit()== True:
@@ -93,16 +93,17 @@ def xpath(weburl,imgurl):
                     break
         
     if flag == True:
-        finalxpath = truexpath[:truexpath.rfind('/')]
-        finalxpath = finalxpath+'/*'
-        locations = htree.xpath(finalxpath)
+        truexpath = truexpath[:truexpath.rfind('/')]
+        truexpath = truexpath+'/*'
+        locations = htree.xpath(truexpath)
         for Elem_location in locations:
             results.append(htree.getpath(Elem_location))
             price.append(Elem_location.text)
+            print Elem_location.text
         pricetem = str(price).split()
         for tem in pricetem:
             tem = tem[tem.find("\'")+1:tem.rfind("\'")]
-            print tem
+            #print tem
             if tem.isalpha()==False and tem.find(".")>-1:
                 productprice=tem
                 break
@@ -131,15 +132,23 @@ def xpath(weburl,imgurl):
         statuslocations = htree.xpath(sxpath)
         for Elem_location in statuslocations:
             finalstatus.append(Elem_location.text)
+            print Elem_location.text
+            
             
     else:
         print "can't get status"
         finalstatus=""
-        
-    return "currency: " + currency + " price: "+productprice +" status:"+ productstatus
+
+    print "pricexpath " + truexpath
+    print "statusxpath "+ sxpath
+    return truexpath, sxpath
     #return  productprice+productstatus
     
     
-run (host='localhost',port = 8081, debug = True)
+#run (host='localhost',port = 8080, debug = True)
 
-
+imgurl="http://images.manufactum.de/manufactum/thumbs_188/20415_1.jpg"
+imgurl1="http://img2.etsystatic.com/006/0/5755013/il_170x135.372291786_3e5a.jpg"
+weburl="http://www.manufactum.com/outerwear-c193631/"
+weburl1="http://www.etsy.com/"
+xpath(weburl,imgurl)
