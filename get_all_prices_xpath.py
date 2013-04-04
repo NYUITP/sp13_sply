@@ -88,6 +88,6 @@ def get_price(weburl):
 
 
 # run (host='localhost',port = 8080, debug = True)
-url = "http://www.manufactum.com/sweaters-c193633/"
-# url = "http://www.manufactum.com/horse-leather-gentlemans-blouson-p1464993/?c=193631"
+# url = "http://www.manufactum.com/sweaters-c193633/"
+url = "http://www.manufactum.com/horse-leather-gentlemans-blouson-p1464993/?c=193631"
 get_price(url)
