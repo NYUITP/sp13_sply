@@ -8,9 +8,6 @@ import cookielib
 from pprint import pprint
 import re
 
-#@route('/xpath/<weburl:path>,<imgurl:path>')
-# run (host='localhost',port = 8080, debug = True)
-
 
 def get_price(weburl):
     final = []
@@ -41,7 +38,7 @@ def get_price(weburl):
         final_price = ""
         final_symbol = ""
         if truexpath.find('script') == -1:
-            print truexpath
+            # print truexpath
             modxpath = []
             modxpath.append(truexpath[:truexpath.rfind('/')])
             modxpath.append(truexpath[:truexpath.rfind('/')+1]+"*")
@@ -68,7 +65,6 @@ def get_price(weburl):
                         if price_get(pricestr) != "No price":
                             final_price = price_get(pricestr)
                             break
-
         print final_currency
         print final_price
         print truexpath
@@ -213,5 +209,6 @@ def price_get(pri):
 # url = "http://www.etsy.com"
 # url ="http://www.urbanoutfitters.com/urban/catalog/category.jsp?id=BRANDS&brand=rothco"
 # url="http://www.zara.com/webapp/wcs/stores/servlet/category/us/en/zara-nam-S2013/358080/Jackets"
+# url = 'http://www.zara.com/webapp/wcs/stores/servlet/product/us/en/zara-nam-S2013/358080/1232023/JACKET+WITH+PATCHES'
 # url="http://www.zara.com/webapp/wcs/stores/servlet/product/us/en/zara-nam-S2013/358082/1224520/POLKA+DOT+DRESS"
 # result = get_price(url)
