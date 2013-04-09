@@ -30,6 +30,23 @@ def is_url_available(url):
     return found
 
 
+# def is_url_available(url):
+#     host, path = urlparse.urlsplit(url)[1:3]
+#     found = 0
+#     # try:
+#     connection = httplib.HTTPConnection(host)  # Make HTTPConnection Object
+#     connection.request("HEAD", path)
+#     responseOb = connection.getresponse()  # Grab HTTPResponse Object
+
+#     if responseOb.status == 200:
+#         found = 1
+#         # else:
+#             # print "Status %d %s : %s" % (responseOb.status, responseOb.reason, url)
+#     # except Exception, e:
+#     #     print e.__class__,  e, url
+#     return found
+
+
 def is_url_schema(page):
     flag = page.xpath('//*[@itemprop="name"]')
     result = 1
@@ -101,12 +118,18 @@ def get_product_name(page):
 #      sys.exit(1)
 
 if __name__ == '__main__':
-    file = open()
+    file = open('good_urls.txt')
     while 1:
         urls = file.readlines(100000)
         if not urls:
             break
         for url in urls:
+            # print url,
+            if is_url_available(url,):
+                page = urlreader(url,)
+                if is_url_schema(page):
+                    print url,
+
     # urls = [
     #     'http://www.barnesandnoble.com/p/home-gift-ihome-ihm60-20-rechargable-mini-speaker-gray/25547311?ean=47532896213&isbn=47532896213&urlkeywords=ihome+ihm60+20+rechargable+mini+speaker+gray',
     #     'http://www.barnesandnoble.com/p/toys-games-kiss-8-gb-usb-flash-drive-peter-criss-catman/25209496?ean=895221380051&isbn=895221380051',
@@ -127,27 +150,27 @@ if __name__ == '__main__':
 
 
     # outfile = open(‘schemaPrices.txt’, ‘w’)
-    for url in urls:
-        if is_url_available(url):
-            page = urlreader(url)
-            if is_url_schema(page):
-                if is_url_instock(page):
-                    print (get_product_name(page) + " is " + get_product_price(page))
-                    print " "
-                # elif is_product_onsale(page):
-                # 	print (get_product_name(page) + " is ON SALE!! The on sale price is " + get_onsale_price(page))
-                # 	print " "
-                else:
-                    if is_product_onsale(page):
-                        print (get_product_name(page) + " is ON SALE!! The on sale price is " + get_onsale_price(page))
-                        print " "
-                    else:
-                        print (get_product_name(page)+" is out of stock!")
-                        print " "
-            else:
-                print ("***"+url+"***  ")
-                print "This is not a Schema type website!"
-                print " "
-        else:
-            print "URL not exists"
-            print " "
+    # for url in urls:
+    #     if is_url_available(url):
+    #         page = urlreader(url)
+    #         if is_url_schema(page):
+    #             if is_url_instock(page):
+    #                 print (get_product_name(page) + " is " + get_product_price(page))
+    #                 print " "
+    #             # elif is_product_onsale(page):
+    #             # 	print (get_product_name(page) + " is ON SALE!! The on sale price is " + get_onsale_price(page))
+    #             # 	print " "
+    #             else:
+    #                 if is_product_onsale(page):
+    #                     print (get_product_name(page) + " is ON SALE!! The on sale price is " + get_onsale_price(page))
+    #                     print " "
+    #                 else:
+    #                     print (get_product_name(page)+" is out of stock!")
+    #                     print " "
+    #         else:
+    #             print ("***"+url+"***  ")
+    #             print "This is not a Schema type website!"
+    #             print " "
+    #     else:
+    #         print "URL not exists"
+    #         print " "

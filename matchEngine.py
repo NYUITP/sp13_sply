@@ -18,7 +18,8 @@ def check_results(filename):
         if not urls:
             break
         for url in urls:
-            if get_price.get_price(url,) == get_solution.get_solution(url):
+            # get solution could be a case file or a function like schema
+            if (get_price.get_price(url,) == get_solution.get_solution(url,)):
                 case_nubmer = case_nubmer + 1
                 right_number = right_number + 1
                 print "Good!"
@@ -27,7 +28,7 @@ def check_results(filename):
                 print "******************WARNING*************************"
                 print url,
                 print get_price.get_price(url,)
-                print get_solution.get_solution(url)
+                print get_solution.get_solution(url,)
                 print "**************************************************"
         accracy_rate = right_number/case_nubmer
     return accracy_rate
