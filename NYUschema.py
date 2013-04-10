@@ -8,16 +8,20 @@ import httplib
 import urlparse
 import json
 
+
 def get_solution(url):
-    #print url
+    # print url
     page = urlreader(url)
     if is_url_instock(page):
-        myprice= get_product_price(page)
+        myprice = get_product_price(page)
     elif is_product_onsale(page):
-        myprice=get_onsale_price(page)
+        myprice = get_onsale_price(page)
+    elif is_sub_price(page):
+        myprice = get_sub_price(page)
     else:
-        myprice="-1"  # out of stock
-    return json.dumps({"xpath":"","price":myprice,"currency":""})
+        myprice = "-1"  # out of stock
+    return json.dumps({"xpath": "","price":myprice,"currency":""})
+
 
 def urlreader(url):
     page_html = urllib2.urlopen(url).read()
@@ -66,8 +70,22 @@ def is_product_onsale(page):
     return result
 
 
+def is_sub_price(page):
+    flag = page.xpath('//*[@class="amount"]')
+    result = 1
+    if (flag == []):
+        result = 0
+    return result
+
+
 def get_onsale_price(page):
     prices = page.xpath('//*[@id="ourprice"]')
+    price = prices[0]
+    return price.text.strip()
+
+
+def get_sub_price(page):
+    prices = page.xpath('//*[@class="amount"]')
     price = prices[0]
     return price.text.strip()
 
@@ -85,25 +103,24 @@ def get_product_name(page):
 
 
 if __name__ == '__main__':
- ''' 
-   urls = {
-        'http://www.modcloth.com/shop/handbags/a-coast-call-bag',
-        'http://store.apple.com/us/browse/home/shop_mac/family/mac_pro?mco=MjI4NDU1',
-        'http://www.modcloth.com/shop/kitchen-gadgets/talented-mr-apple-bottle',
-        'http://www.insound.com/Y-Com-Earphones-with-Microphone-Grey-Headphones-AIAIAI/P/INS52376/',
-        'http://www.overstock.com/Luggage-Bags/Floto-Leather-Venezia-Leather-Duffel-Bag/3821244/product.html?sec_iid=33%20969',
-        'http://www.barnesandnoble.com/p/home-gift-homer-and-aristotle-cast-marble-bookends-set-of-2/12601703?ean=9780830078097&isbn=9780830078097',
-        'http://www.bbq.com/item_name_Smokin-Tex-1400-Pro-Series-Electric-BBQ-Smoker_path_7119-7122_item_1530808.html'
-    }
+    '''
+      urls = {
+           'http://www.modcloth.com/shop/handbags/a-coast-call-bag',
+           'http://store.apple.com/us/browse/home/shop_mac/family/mac_pro?mco=MjI4NDU1',
+           'http://www.modcloth.com/shop/kitchen-gadgets/talented-mr-apple-bottle',
+           'http://www.insound.com/Y-Com-Earphones-with-Microphone-Grey-Headphones-AIAIAI/P/INS52376/',
+           'http://www.overstock.com/Luggage-Bags/Floto-Leather-Venezia-Leather-Duffel-Bag/3821244/product.html?sec_iid=33%20969',
+           'http://www.barnesandnoble.com/p/home-gift-homer-and-aristotle-cast-marble-bookends-set-of-2/12601703?ean=9780830078097&isbn=9780830078097',
+           'http://www.bbq.com/item_name_Smokin-Tex-1400-Pro-Series-Electric-BBQ-Smoker_path_7119-7122_item_1530808.html'
+       }
 
-    for url in urls:
-        if is_url_available(url):
-            print get_solution(url)
-   '''
- myfile = open('schema_urls.txt')
- for line in myfile:
-   (weburl, imgurl) = line.split('\t')
-   #print weburl.rstrip()
-   print get_solution(weburl)
- myfile.close()
-  
+       for url in urls:
+           if is_url_available(url):
+               print get_solution(url)
+      '''
+    myfile = open('schema_urls.txt')
+    for line in myfile:
+        (weburl, imgurl) = line.split('\t')
+        print weburl.rstrip()
+        print get_solution(weburl)
+    myfile.close()
