@@ -118,17 +118,22 @@ def get_product_name(page):
 #      sys.exit(1)
 
 if __name__ == '__main__':
-    file = open('good_urls.txt')
+    file = open('web_urls.txt')
     while 1:
         urls = file.readlines(100000)
         if not urls:
             break
         for url in urls:
             # print url,
-            if is_url_available(url,):
-                page = urlreader(url,)
-                if is_url_schema(page):
-                    print url,
+            if is_url_available(url):
+                page = urlreader(url)
+                try:
+                    if is_url_schema(page):
+                        print url,
+                except Exception, e:
+                    print e.__class__,  e, url
+
+
 
     # urls = [
     #     'http://www.barnesandnoble.com/p/home-gift-ihome-ihm60-20-rechargable-mini-speaker-gray/25547311?ean=47532896213&isbn=47532896213&urlkeywords=ihome+ihm60+20+rechargable+mini+speaker+gray',

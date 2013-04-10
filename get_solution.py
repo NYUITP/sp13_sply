@@ -8,9 +8,9 @@ import httplib
 import urlparse
 
 
-def get_price(url):
-    page = urlreader(url)
-    return (get_product_name(page) + " is " + get_product_price(page))
+# def get_solution(url):
+#     page = urlreader(url)
+#     return (get_product_name(page) + " is " + get_product_price(page))
 
 
 def urlreader(url):
@@ -36,12 +36,12 @@ def is_url_available(url):
     return found
 
 
-# def is_url_schema(page):
-#     flag = page.xpath('//*[@itemprop="name"]')
-#     result = 1
-#     if (flag == []):
-#         result = 0
-#     return result
+def is_url_schema(page):
+    flag = page.xpath('//*[@itemprop="name"]')
+    result = 1
+    if (flag == []):
+        result = 0
+    return result
 
 
 def is_url_instock(page):
@@ -78,10 +78,42 @@ def get_product_name(page):
     return name.text.strip()
 
 
-def helloworld():
-    return "Hello World!"
+if __name__ == '__main__':
+    urls = {
+        'http://www.modcloth.com/shop/handbags/a-coast-call-bag',
+        'http://store.apple.com/us/browse/home/shop_mac/family/mac_pro?mco=MjI4NDU1',
+        'http://www.modcloth.com/shop/kitchen-gadgets/talented-mr-apple-bottle',
+        'http://www.insound.com/Y-Com-Earphones-with-Microphone-Grey-Headphones-AIAIAI/P/INS52376/',
+        'http://www.overstock.com/Luggage-Bags/Floto-Leather-Venezia-Leather-Duffel-Bag/3821244/product.html?sec_iid=33%20969',
+        'http://www.barnesandnoble.com/p/home-gift-homer-and-aristotle-cast-marble-bookends-set-of-2/12601703?ean=9780830078097&isbn=9780830078097',
+        'http://www.bbq.com/item_name_Smokin-Tex-1400-Pro-Series-Electric-BBQ-Smoker_path_7119-7122_item_1530808.html'
+    }
 
-
-# Read solution from json file
-def get_solution():
-    pass
+    for url in urls:
+        if is_url_available(url):
+            page = urlreader(url)
+            if is_url_schema(page):
+                print url
+                if is_url_instock(page):
+                    # print (get_product_name(page) + " is " + get_product_price(page))
+                    print get_product_price(page)
+                    print " "
+                # elif is_product_onsale(page):
+                #   print (get_product_name(page) + " is ON SALE!! The on sale price is " + get_onsale_price(page))
+                #   print " "
+                else:
+                    if is_product_onsale(page):
+                        # print (get_product_name(page) + " is ON SALE!! The on sale price is " + get_onsale_price(page))
+                        print get_onsale_price(page)
+                        print " "
+                    else:
+                        # print (get_product_name(page)+" is out of stock!")
+                        print "$9999999999999999"
+                        print " "
+            else:
+                print ("***"+url+"***  ")
+                print "This is not a Schema type website!"
+                print " "
+        else:
+            print "URL not exists"
+            print " "
