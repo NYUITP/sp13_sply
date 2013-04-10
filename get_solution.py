@@ -10,7 +10,7 @@ import urlparse
 
 def get_solution(url):
     print url,
-    # page = urlreader(url)
+    page = urlreader(url)
     if is_url_instock(page):
         print get_product_price(page)
         print " "
