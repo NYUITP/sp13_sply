@@ -8,9 +8,16 @@ import httplib
 import urlparse
 
 
-# def get_solution(url):
-#     page = urlreader(url)
-#     return (get_product_name(page) + " is " + get_product_price(page))
+def get_solution(url):
+    print url,
+    # page = urlreader(url)
+    if is_url_instock(page):
+        print get_product_price(page)
+        print " "
+    elif is_product_onsale(page):
+        print get_onsale_price(page)
+    else:
+        print "$999999999"  # out of stock
 
 
 def urlreader(url):
@@ -91,29 +98,4 @@ if __name__ == '__main__':
 
     for url in urls:
         if is_url_available(url):
-            page = urlreader(url)
-            if is_url_schema(page):
-                print url
-                if is_url_instock(page):
-                    # print (get_product_name(page) + " is " + get_product_price(page))
-                    print get_product_price(page)
-                    print " "
-                # elif is_product_onsale(page):
-                #   print (get_product_name(page) + " is ON SALE!! The on sale price is " + get_onsale_price(page))
-                #   print " "
-                else:
-                    if is_product_onsale(page):
-                        # print (get_product_name(page) + " is ON SALE!! The on sale price is " + get_onsale_price(page))
-                        print get_onsale_price(page)
-                        print " "
-                    else:
-                        # print (get_product_name(page)+" is out of stock!")
-                        print "$9999999999999999"
-                        print " "
-            else:
-                print ("***"+url+"***  ")
-                print "This is not a Schema type website!"
-                print " "
-        else:
-            print "URL not exists"
-            print " "
+            get_solution(url)
