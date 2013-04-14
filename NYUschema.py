@@ -93,6 +93,7 @@ def get_sub_price(page):
 def get_product_price(page):
     prices = page.xpath('//*[@itemprop="price"]')
     price = prices[0]
+    # filter(str.isalnum, crazystring)
     return price.text.strip()
 
 
