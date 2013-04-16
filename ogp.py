@@ -32,7 +32,6 @@ def is_url_available(url):
 
 def is_url_opg(page):
     flag = page.xpath('//meta[@name="description"]')
-    # xmlns:og="http://opengraphprotocol.org/schema/"
     result = 1
     if (flag == []):
         result = 0
@@ -41,35 +40,26 @@ def is_url_opg(page):
 
 def get_product_price(page):
     prices = page.xpath('//*[@itemprop ="price"]')
-    if prices[] != []:
+    if prices != []:
         price = prices[0]
     else:
         prices = page.xpath('//*[@class="active_price"]')
-        if prices[] != []:
+        if prices != []:
             price = prices[0]
         else:
             prices = page.xpath('//*[@class="price"]')
-            if prices[] != []:
+            if prices != []:
                 price = prices[0]
-    return price
-
-
+            else:
+                prices = page.xpath('//*[@class="sale-price"]')
+                price = prices[0]
+                # class="sale-price"
 
     price = prices[0]
-    return price.text.strip()
+    return filter(lambda ch: ch in '€￥£円$0123456789.,', price.text)
 
 
 if __name__ == '__main__':
-    # urls = {
-    #     'http://store.nike.com/us/en_us/?l=shop,pdp,ctr-inline/cid-1/pid-690886/pgid-745832'
-    # }
-
-    # for url in urls:
-    #     if is_url_available(url):
-    #         page = urlreader(url)
-    #         if is_url_opg(page):
-    #             print url+" is OGP!"
-    #             print get_product_price(page)
     file = open('good_urls.txt')
     while 1:
         urls = file.readlines(100000)
@@ -81,8 +71,9 @@ if __name__ == '__main__':
                 page = urlreader(url)
                 try:
                     if is_url_opg(page):
-                        print "###############################################################"
-                        print url,
-                        print "****************************************************************"
+                        # print "###############################################################"
+                        # print url,
+                        # print "****************************************************************"
+                        print get_product_price(page)
                 except Exception, e:
                     print e.__class__,  e, url
