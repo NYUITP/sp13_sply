@@ -11,15 +11,26 @@ import json
 
 def get_solution(url):
     # print url
+    # page = urlreader(url)
+    # if is_url_instock(page):
+    #     myprice = get_product_price(page)
+    # elif is_product_onsale(page):
+    #     myprice = get_onsale_price(page)
+    # elif is_sub_price(page):
+    #     myprice = get_sub_price(page)
+    # else:
+    #     myprice = "-1"  # out of stock
     page = urlreader(url)
-    if is_url_instock(page):
+    if is_sub_price(page):
+        myprice = get_sub_price(page)
+    elif is_url_instock(page):
         myprice = get_product_price(page)
     elif is_product_onsale(page):
         myprice = get_onsale_price(page)
-    elif is_sub_price(page):
-        myprice = get_sub_price(page)
     else:
         myprice = "-1"  # out of stock
+
+
     return json.dumps({"xpath": "","price":myprice,"currency":""})
 
 
@@ -95,8 +106,8 @@ def get_sub_price(page):
 def get_product_price(page):
     prices = page.xpath('//*[@itemprop="price"]')
     price = prices[0]
-    # €,￥,£,$
-    return filter(lambda ch: ch in '€￥£$0123456789.,', price.text)
+    # €,￥,£,$,円
+    return filter(lambda ch: ch in '€￥£円$0123456789.,', price.text)
     # filter(str.isalnum, crazystring)
     # return price.text.strip()
 
@@ -119,13 +130,20 @@ if __name__ == '__main__':
            'http://www.bbq.com/item_name_Smokin-Tex-1400-Pro-Series-Electric-BBQ-Smoker_path_7119-7122_item_1530808.html'
        }
 
-       for url in urls:
-           if is_url_available(url):
-               print get_solution(url)
-      '''
+    #    for url in urls:
+    #        if is_url_available(url):
+    #            print get_solution(url)
+    #   '''
     myfile = open('schema_urls.txt')
     for line in myfile:
         (weburl, imgurl) = line.split('\t')
         print weburl.rstrip()
         print get_solution(weburl)
     myfile.close()
+    # url = 'http://store.hypebeast.com/brands/undefeated/olive-play-dirty-new-era-beanie'
+    # page = urlreader(url)
+    # print is_product_onsale(page)
+    # print is_url_instock(page)
+    # print is_sub_price(page)
+    # print get_product_price(page)
+    # print get_sub_price(page)
