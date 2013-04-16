@@ -129,7 +129,9 @@ if __name__ == '__main__':
                 page = urlreader(url)
                 try:
                     if is_url_schema(page):
+                        print "************************"
                         print url,
+                        print "########################"
                 except Exception, e:
                     print e.__class__,  e, url
 
