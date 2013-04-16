@@ -31,7 +31,7 @@ def is_url_available(url):
 
 
 def is_url_opg(page):
-    flag = page.xpath('//[@*xmlns:og="http://opengraphprotocol.org/schema/"]')
+    flag = page.xpath('//meta[@name="description"]')
     # “/descendant::div[@id='leftmenu']”
     # '//[@*xmlns:og="http://opengraphprotocol.org/schema/"]'
     result = 1
@@ -41,7 +41,7 @@ def is_url_opg(page):
 
 if __name__ == '__main__':
     urls = {
-        'http://store.nike.com/us/en_us/?l=shop,pdp,ctr-inline/cid-1/pid-667028/pgid-670502',
+        'http://store.nike.com/us/en_us/?l=shop,pdp,ctr-inline/cid-1/pid-667028/pgid-670502'
     }
 
     for url in urls:
