@@ -124,7 +124,7 @@ if __name__ == '__main__':
         if not urls:
             break
         for url in urls:
-            # print url,
+            # print url
             if is_url_available(url):
                 page = urlreader(url)
                 try:
