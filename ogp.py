@@ -32,16 +32,21 @@ def is_url_available(url):
 
 def is_url_opg(page):
     flag = page.xpath('//meta[@name="description"]')
-    # “/descendant::div[@id='leftmenu']”
-    # '//[@*xmlns:og="http://opengraphprotocol.org/schema/"]'
     result = 1
     if (flag == []):
         result = 0
     return result
 
+
+def get_product_price(page):
+    prices = page.xpath('//*[@itemprop ="price"]')
+    price = prices[0]
+    return price.text.strip()
+
+
 if __name__ == '__main__':
     urls = {
-        'http://store.nike.com/us/en_us/?l=shop,pdp,ctr-inline/cid-1/pid-667028/pgid-670502'
+        'http://store.nike.com/us/en_us/?l=shop,pdp,ctr-inline/cid-1/pid-690886/pgid-745832'
     }
 
     for url in urls:
@@ -49,3 +54,4 @@ if __name__ == '__main__':
             page = urlreader(url)
             if is_url_opg(page):
                 print url+" is OGP!"
+                print get_product_price(page)

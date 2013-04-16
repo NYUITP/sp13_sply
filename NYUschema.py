@@ -81,20 +81,24 @@ def is_sub_price(page):
 def get_onsale_price(page):
     prices = page.xpath('//*[@id="ourprice"]')
     price = prices[0]
-    return price.text.strip()
+    return filter(lambda ch: ch in '€￥£$0123456789.,', price.text)
+    # return price.text.strip()
 
 
 def get_sub_price(page):
     prices = page.xpath('//*[@class="amount"]')
     price = prices[0]
-    return price.text.strip()
+    return filter(lambda ch: ch in '€￥£$0123456789.,', price.text)
+    # return price.text.strip()
 
 
 def get_product_price(page):
     prices = page.xpath('//*[@itemprop="price"]')
     price = prices[0]
+    # €,￥,£,$
+    return filter(lambda ch: ch in '€￥£$0123456789.,', price.text)
     # filter(str.isalnum, crazystring)
-    return price.text.strip()
+    # return price.text.strip()
 
 
 def get_product_name(page):
