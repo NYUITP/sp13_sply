@@ -10,6 +10,16 @@ import json
 
 
 def get_solution(url):
+    page = urlreader(url)
+    if is_url_schema(page):
+        myprice = get_price(page)
+    elif is_url_opg(page):
+        myprice = get_ogp_price(page)
+    else:
+        print "-2"
+    return myprice
+
+def get_price(page):
     # print url
     # page = urlreader(url)
     # if is_url_instock(page):
@@ -19,19 +29,39 @@ def get_solution(url):
     # elif is_sub_price(page):
     #     myprice = get_sub_price(page)
     # else:
-    #     myprice = "-1"  # out of stock
-    page = urlreader(url)
+    # myprice = "-1"  # out of stock
+    # page = urlreader(url)
     if is_sub_price(page):
-        myprice = get_sub_price(page)
+        myprice1 = get_sub_price(page)
     elif is_url_instock(page):
-        myprice = get_product_price(page)
+        myprice1 = get_product_price(page)
     elif is_product_onsale(page):
-        myprice = get_onsale_price(page)
+        myprice1 = get_onsale_price(page)
     else:
-        myprice = "-1"  # out of stock
+        myprice1 = "-1"  # out of stock
+    return myprice1
 
 
-    return json.dumps({"xpath": "","price":myprice,"currency":""})
+def get_ogp_price(page):
+    # page = urlreader(url)
+    prices = page.xpath('//*[@itemprop ="price"]')
+    if prices != []:
+        price = prices[0]
+    else:
+        prices = page.xpath('//*[@class="active_price"]')
+        if prices != []:
+            price = prices[0]
+        else:
+            prices = page.xpath('//*[@class="price"]')
+            if prices != []:
+                price = prices[0]
+            else:
+                prices = page.xpath('//*[@class="sale-price"]')
+                price = prices[0]
+                # class="sale-price"
+
+    price = prices[0]
+    return filter(lambda ch: ch in '€￥£円$0123456789.,', price.text)
 
 
 def urlreader(url):
@@ -59,6 +89,14 @@ def is_url_available(url):
 
 def is_url_schema(page):
     flag = page.xpath('//*[@itemprop="name"]')
+    result = 1
+    if (flag == []):
+        result = 0
+    return result
+
+
+def is_url_opg(page):
+    flag = page.xpath('//meta[@name="description"]')
     result = 1
     if (flag == []):
         result = 0
@@ -138,7 +176,14 @@ if __name__ == '__main__':
     for line in myfile:
         (weburl, imgurl) = line.split('\t')
         print weburl.rstrip()
-        print get_solution(weburl)
+        page = urlreader(weburl)
+        if is_url_schema(page):
+            print get_price(page)
+        elif is_url_opg(page):
+            print get_ogp_price(page)
+        else:
+            print "-2"
+        # print get_solution(weburl)
     myfile.close()
     # url = 'http://store.hypebeast.com/brands/undefeated/olive-play-dirty-new-era-beanie'
     # page = urlreader(url)
