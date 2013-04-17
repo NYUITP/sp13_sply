@@ -23,10 +23,10 @@ def main_process(weburl, imgurl):
     close_xpath=[]
     close_xpath = xpath_compare(imgxpath, urls)
 
-#    for xpath in close_xpath:
-#        print finprice[xpath]
-#        print fincurrency[xpath]
-#        print xpath
+ #   for xpath in close_xpath:
+ #       print finprice[xpath]
+ #       print fincurrency[xpath]
+ #       print xpath
     return  json.dumps({"price": finprice[close_xpath[0]], "currency": fincurrency[close_xpath[0]], "xpath": close_xpath[0]})      
 
 if __name__ == "__main__":

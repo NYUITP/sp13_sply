@@ -21,7 +21,7 @@ def get_price(weburl):
     opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookielib.CookieJar()))
     f = opener.open(weburl)
     s = f.read()
-    s = unicode(s, 'utf-8')
+    #s = unicode(s, 'utf-8')
     f.close()
     hdoc = HTML.fromstring(s)
     htree = etree.ElementTree(hdoc)

@@ -71,6 +71,8 @@ if __name__ == '__main__':
                 page = urlreader(url)
                 try:
                     if is_url_opg(page):
+                        f = open('ogp_urls.txt','a')
+                        f.write(url,)
                         print "###############################################################"
                         print url,
                         print "****************************************************************"
