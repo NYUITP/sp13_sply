@@ -1,11 +1,12 @@
+
 from get_price_test import get_price
 from imagexpath_get import xpath_imgrequest
 from xpath_compare import xpath_compare
 from get_price_test import price_get
 from get_price_test import currency_get
 
-weburl2 = "http://www.etsy.com/"
-imgurl2 = "http://img0.etsystatic.com/011/1/6214459/il_170x135.411637780_2nl1.jpg"
+weburl2 = "http://www.manufactum.com/sweaters-c193633/"
+imgurl2 = "http://images.manufactum.de/manufactum/thumbs_188/84498_1.jpg"
 
 
 def main_process(weburl, imgurl):
