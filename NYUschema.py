@@ -60,8 +60,8 @@ def get_ogp_price(page):
                 price = prices[0]
                 # class="sale-price"
 
-    price = prices[0]
-    return filter(lambda ch: ch in '€￥£円$0123456789.,', price.text)
+    # price = prices[0]
+    return filter(lambda ch: ch in '€￥£$0123456789.,', price.text)
 
 
 def urlreader(url):
@@ -172,10 +172,12 @@ if __name__ == '__main__':
     #        if is_url_available(url):
     #            print get_solution(url)
     #   '''
-    myfile = open('schema_urls.txt')
+    myfile = open('schema_urls_org.txt')
     for line in myfile:
-        (weburl, imgurl) = line.split('\t')
-        print weburl.rstrip()
+        # (weburl, imgurl) = line.split('\t')
+        # print weburl.rstrip()
+        weburl = line`
+        print weburl
         page = urlreader(weburl)
         if is_url_schema(page):
             print get_price(page)
