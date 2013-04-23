@@ -126,7 +126,7 @@ if __name__ == '__main__':
         for url in urls:
             # print url
             if is_url_available(url):
-                f = open('good_urls.txt','a')
+                f = open('better_urls.txt','a')
                 f.write(url,)
                 print url,
                 page = urlreader(url)

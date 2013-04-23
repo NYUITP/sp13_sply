@@ -236,17 +236,20 @@ currency: currency
 var answers;
 var myi = 0;
 while(myi< $myimgs.length)
-{
-if ($myimgs[myi].src == myimgurl)
+{	
+var righturl = $myimgs[myi].src;	
+if (myimgurl.indexOf(righturl)>-1)
+//if(myimgurl == righturl)
 {
   answers= get_price($($myimgs[myi]));
   return ('{"price": "' + answers.amount + '" ,"currency": "' + answers.currency +  '"}');
+  //return righturl
 }
    else
      myi++;
+	 //console.log(righturl);
 }
 return '{"price": "", "currency": ""}';
-
 
 };
 

@@ -31,10 +31,10 @@ def get_price(page):
     # else:
     # myprice = "-1"  # out of stock
     # page = urlreader(url)
-    if is_sub_price(page):
-        myprice1 = get_sub_price(page)
-    elif is_url_instock(page):
+    if is_url_instock(page):
         myprice1 = get_product_price(page)
+    elif is_sub_price(page):
+        myprice1 = get_sub_price(page)
     elif is_product_onsale(page):
         myprice1 = get_onsale_price(page)
     else:
@@ -59,9 +59,13 @@ def get_ogp_price(page):
                 prices = page.xpath('//*[@class="sale-price"]')
                 price = prices[0]
                 # class="sale-price"
+    if price.text == "":
+        return "Null"
+    else:
+        return filter(lambda ch: ch in '€￥£$0123456789.,', price.text)
 
     # price = prices[0]
-    return filter(lambda ch: ch in '€￥£$0123456789.,', price.text)
+    # return price.text
 
 
 def urlreader(url):
@@ -172,11 +176,13 @@ if __name__ == '__main__':
     #        if is_url_available(url):
     #            print get_solution(url)
     #   '''
-    myfile = open('schema_urls_org.txt')
-    for line in myfile:
+    myfile = open('schema&ogp_urls.txt')
+    data = myfile.readlines()
+    for line in data:
+        (weburl, imgurl) = line.split(' ')
         # (weburl, imgurl) = line.split('\t')
         # print weburl.rstrip()
-        weburl = line`
+        # weburl = line
         print weburl
         page = urlreader(weburl)
         if is_url_schema(page):
