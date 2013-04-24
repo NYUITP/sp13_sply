@@ -260,13 +260,19 @@ weight -= body_font_size - font_size;
 }
 // Weighting - add points for the following:
 // Is near the image
-
+if (flag!=true){
+var i = 0, max = Math.min(distances.length + 1, 5);
+while(i < max-1){
+if(distances[i].text == text) weight *= (max-i)+10;
+i++;
+}
+}
+else{
 var i = 0, max = Math.min(distances.length + 1, 5);
 while(i < max-1){
 if(distances[i].text == text) weight *= (max-i);
 i++;
 }
-
 // add xpath distance as a factor simliar with visual distance
 var j = 0, max = Math.min(xpath_distances.length + 1, 5);
 if (flag == true){
