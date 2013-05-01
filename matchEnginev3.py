@@ -18,8 +18,8 @@ if __name__ == "__main__":
 
     for line in data:
         (weburl, imgurl) = line.split(' ')
-        ans1 = json.loads(NYUschema.get_solution(weburl))
-        ans2 = json.loads(NYUXpath.main_process(weburl, imgurl))
+        # ans1 = json.loads(NYUschema.get_solution(weburl))
+        # ans2 = json.loads(NYUXpath.main_process(weburl, imgurl))
         # casperstring = ["/Users/sebastian/Downloads/n1k0-casperjs-bc0da16/bin/casperjs",
                         # "webcrawlerv7.js", weburl, imgurl.rstrip()]
         # returnval = Popen(casperstring, stdout=PIPE)
