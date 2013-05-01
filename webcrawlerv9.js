@@ -1,33 +1,17 @@
 var casper = require('casper').create({
    clientScripts: ["includes/jquery.min.js"],
-//   verbose: true,
-//    logLevel: "debug",
-//   viewportSize: {width: 1800, height: 1400}
-});
-// print out all the messages in the headless browser context
-/*casper.on('remote.message', function(msg) {
-    this.echo('remote message caught: ' + msg);
-});
 
-// print out all the messages in the headless browser context
-casper.on("page.error", function(msg, trace) {
-    this.echo("Page Error: " + msg, "ERROR");
 });
-*/
-
 
 var dump = require("utils").dump;
 var myurl = casper.cli.get(0);
 var myimg_url = casper.cli.get(1);
+
 var countLinks = function(myimgurl) {
    var $myimgs = $('img');
-   //alert("from countlinks: " + myimgurl);
-   //alert("from countlinks number of images: " + $myimgs.length);
-   //var $myimgs = $('img[src*="http://www.urbanexcess.com/images/product/medium/I013645-89-00_1.jpg"]');
-   //var $myimgs = $("img[src*='http://www.urbanexcess.com/images/product/medium/I013645-89-00_1.jpg']");
-   //var $myimgs = $('img[src*="I013645-89-00_1.jpg"]');
   var get_price= function($img,flag){
 var jQuery = $;
+
 function getPathTo(element) {
     if (element.id!=='')
         return 'id("'+element.id+'")';
@@ -46,8 +30,12 @@ function getPathTo(element) {
 }
 //get image xpath;
 var xpath_img = getPathTo($img);
+if(xpath_img.indexOf("/")>-1){
 var tem = xpath_img.spilt("/");
 var img_idname = tem[0];
+}
+else
+img_idname = -1;
 var currencies = [
 'EUR','â‚¬',
 'GBP','Â£',
@@ -171,66 +159,80 @@ if(node)
 node = window.document.body;
 
 $prices = jQuery(find_with_regex(node, money_string));
-function getPathTo(element) {
-    if (element.id!=='')
-        return 'id("'+element.id+'")';
-    if (element===document.body)
-        return element.tagName;
-
-    var ix= 0;
-    var siblings= element.parentNode.childNodes;
-    for (var i= 0; i<siblings.length; i++) {
-        var sibling= siblings[i];
-        if (sibling===element)
-            return getPathTo(element.parentNode)+'/'+element.tagName+'['+(ix+1)+']';
-        if (sibling.nodeType===1 && sibling.tagName===element.tagName)
-            ix++;
-    }
-}
 //get each xpath distance between price to the image.
 
+/*
 var count=0;
-var xpath = 0;
-while(count<$prices.length-1){
+//var length=(xpath_img.length-1);
+while(count<($prices.length-1)){
 var xpath_price = getPathTo($prices[count]);
+if (xpath_price.indexOf("/")>-1){
 var idtemp = xpath_price.split("/");
 var price_idname = idtemp[0];
-var length=xpath_img.length;
+}
+else 
+price_idname = -1;
 var i = 0;
 var xpath_dis=0;
+if (price_idname != -1 && price_idname == img_idname){
+while(i<length){
+if (xpath_price[i]==xpath_img[i]){
+xpath_dis++;
+i++;}
+else 
+break;
+}}
+else
+xpath_dis = -1;
+var text = jQuery.trim(money_regex.exec($prices[count].text)[0]);
+if (xpath_dis > -1){
+xpath_distances.push({
+el:$prices[count],
+text: text,
+xpath_dis : 200-xpath_dis
+});}
+
+count++;}
+*/
+$prices.each(function(){
+var $this = jQuery(this),
+text = jQuery.trim(money_regex.exec($this.text())[0]),
+idtemp,
+xpath_dis,
+price_idname,
+xpath_price = getPathTo($this);
+if ((img_idname>-1)&&(xpath_price.indexOf("/")>-1)){
+idtemp = xpath_price.split("/");
+price_idname = idtemp[0];
+var i=0;
 if (price_idname == img_idname){
 while(i<length){
 if (xpath_price[i]==xpath_img[i]){
 xpath_dis++;
 i++;}
 else 
-break
-}}
+break;
+}
+}
 else
-xpath_dis = -1;
-xpath = xpath_dis;
-var text = jQuery.trim(money_regex.exec($prices[count].text())[0]);
-if (xpath_dis > -1){
+price_idname = -1;
+}
+if(price_idname>-1){
 xpath_distances.push({
-el:$prices[count],
+el: this,
 text: text,
-xpath_dis : 200-xpath_dis
+xpath_distance: xpath_price
 });
 }
-count++;
-}
+});
 
 $prices.each(function(){
 var $this = jQuery(this),
-
-
 text = jQuery.trim(money_regex.exec($this.text())[0]),
 offset = $this.offset(),
 center = {top: offset.top+$this.height()/2, left: offset.left+$this.width()/2},
 diff_top = img_center.top - center.top,
 diff_left = img_center.left - center.left; 
-
-
 distances.push({
 el: this,
 text: text,
@@ -267,6 +269,7 @@ weight -= body_font_size - font_size;
 }
 // Weighting - add points for the following:
 // Is near the image
+
 var i = 0, max = Math.min(distances.length + 1, 5);
 while(i < max-1){
 if(distances[i].text == text) weight *= (max-i);
@@ -274,12 +277,13 @@ i++;
 }
 
 // add xpath distance as a factor simliar with visual distance
+if(flag == true){
 var j = 0, max = Math.min(xpath_distances.length + 1, 5);
 while(j < max-1){
 if(xpath_distances[j].text == text) weight *=(max-j);
 j++;
 }
-
+}
 prices.push({
 el: this,
 text: text,
@@ -299,27 +303,12 @@ if(amount){
  i++;
  }
 }
-// Debug code:
-// jQuery(".sv_weight").remove();
-// for(var i = 0; i < prices.length; i++){
-// var offset = jQuery(prices[i].el).offset(),
-// $el = jQuery("<div>").text(prices[i].weight).addClass("sv_weight").css({
-// background:"black",
-// color:"yellow",
-// position:"absolute",
-// top: offset.top,
-// padding: 5
-// });
-// jQuery('body').append($el);
-// $el.css({left: offset.left-$el.outerWidth()-5});
-// }
+
 return({
 amount: amount,
 currency: currency
 });
 };
-//var myobjeto = $($myimgs[0])
-//var myoffset = myobjeto.offset(); 
 
 var answers;
 var myj = 0;
@@ -330,9 +319,16 @@ var minheight = 0;
 var maxheight = 0;
 var samecount = 0;
 var flag;
-while(myj<$myimgs.length)
+if(myimgurl.indexOf('?')>-1){
+	var temp = myimgurl.split("?");
+	myimgurl = temp[0];}
+	
+while(myj<($myimgs.length-1))
 {
-
+	if($myimgs[myj].src.indexOf('?')>-1){
+		var temp = $myimgs[myj].src.split("?");
+		$myimgs[myj].src = temp[0];
+	}
 	if (myimgurl.indexOf($myimgs[myj].src)>-1){
 		width = $myimgs[myj].width;
 		height = $myimgs[myj].height;
@@ -345,32 +341,30 @@ while(myj<$myimgs.length)
 	myj ++;
 }
 var i=0;
-while(i<$myimgs.length)
+while(i<($myimgs.length-1))
 {
-	if(width < 800 &&$myimgs[i].width == width &&$myimgs[i].height > minheight && $myimgs[i].height<maxheight)
+	if(width < 800 && $myimgs[i].width == width && $myimgs[i].height > minheight && $myimgs[i].height < maxheight)
+	//if(width < 800 && $myimgs[i].width == width && $myimgs[i].height == height)
 	samecount++;
 	if(width >= 800 && $myimgs[i].width == width)
 	seamcount++;
 	i++;
 }
-if (height >150 && samecount >7)
-flag = true;
-if(height <150 && samecount >=4)
-flag = true;
+if ((height >150 && samecount >7)||(height <=150 && samecount > 3))
+		flag = true;
 else
-flag =false;
+		flag = false;
 
-answers= get_price($($myimgs[pos]),flag);
+
+answers = get_price($($myimgs[pos]),flag);
+
 return ('{"price": "' + answers.amount + '" ,"currency": "' + answers.currency +  '"}');
+};
 
 
 // removing default options passed by the Python executable
 casper.cli.drop("cli");
 casper.cli.drop("casper-path");
-/*
-
-javascript:void((function(){var%20hsb=document.createElement('script');hsb.setAttribute('src','https://svpply.com/bookmarklet/loader/svpk_ed6dbe1f4c24f5b2796977e0cac5408a');hsb.setAttribute('type','text/javascript');document.getElementsByTagName('head')[0].appendChild(hsb);})());
-*/
 if (casper.cli.args.length === 0 && Object.keys(casper.cli.options).length === 0) {
     casper
         .echo("Pass some args and options to see how they are handled by CasperJS")
@@ -379,35 +373,13 @@ if (casper.cli.args.length === 0 && Object.keys(casper.cli.options).length === 0
 }
 
 
-//casper.echo("Casper CLI passed args:");
-//dump(myurl);
-//dump(myimg);
-/*
-casper.echo("Casper CLI passed options:");
-dump(casper.cli.options);
-*/
-
-/*casper.start("http://www.urbanoutfitters.com/urban/catalog/productdetail.jsp?id=26774133&parentid=M_TOPS");
-casper.run( function()
-{
-this.echo(this.getCurrentUrl());
-});
-*/
 casper.start(myurl, function() {
- //   this.echo(this.getCurrentUrl()); 
+
 });
-//casper.thenEvaluate(init);
+
 casper.then(function() {
-//            phantom.injectJs('includes/svpply3.js');
-            // this.echo("myimg_url: " + myimg_url); 
-            //this.echo((this.evaluate(countLinks(myimg_url))));
              this.echo((this.evaluate(countLinks,myimg_url)));
         });
 
 casper.run();
 
-/*casper.run( function()
-{
-this.echo(this.getCurrentUrl());
-});
-*/
