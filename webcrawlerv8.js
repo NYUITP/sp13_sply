@@ -156,29 +156,18 @@ if(node)
 // Calculate the absolute distance between the img and the price
 node = window.document.body;
 $prices = jQuery(find_with_regex(node, money_string));
-$prices.each(function(){
-var $this = jQuery(this),
-text = jQuery.trim(money_regex.exec($this.text())[0]),
-offset = $this.offset(),
-center = {top: offset.top+$this.height()/2, left: offset.left+$this.width()/2},
-diff_top = img_center.top - center.top,
-diff_left = img_center.left - center.left;
-distances.push({
-el: this,
-text: text,
-distance: Math.sqrt(diff_top*diff_top+diff_left*diff_left)
-});
-});
-distances.sort(function(a,b){ return a.distance-b.distance; });
+
 $prices.each(function(){
 var $this = jQuery(this),
 weight = 0,
+myi = 0,
+max = 0,
 //
 offset_sv = $this.offset(),
 center_sv = {top: offset_sv.top+$this.height()/2, left: offset_sv.left+$this.width()/2},
 diff_top_sv = img_center.top - center_sv.top,
 diff_left_sv = img_center.left - center_sv.left;
-// 
+//  
 font_size = find_font_size($this[0]),
 text = jQuery.trim(money_regex.exec($this.text())[0]);
 // Is near the image
@@ -195,35 +184,41 @@ if($this.css('font-weight') == 'bold') weight++;
 if($this.css('text-decoration') == 'line-through') weight-=10;
 // Has a larger font
 if(font_size > body_font_size){
-weight += font_size - body_font_size + 1;
+//weight += font_size - body_font_size + 1;
+  weight++;
 } else {
-weight -= body_font_size - font_size;
+//weight -= body_font_size - font_size;
+weight--;
 }
-// Weighting - add points for the following:
-// Is near the image
-var i = 0, max = Math.min(distances.length + 1, 100);
-while(i < max-1){
-if(distances[i].text == text || diff_top_sv < 0) weight = weight*(max-i)*(max-i)*(max-i)+10;
-//if (text.indexOf(distances[i].text) > -1 || diff_top_sv < 0) weight = weight*(max-i)*(max-i)*(max-i)+10;
-i++;
-
-}
-//if($this.css('visibility') =='hidden') weight=0;
-//if($this.css('display') == 'none') weight=0;
-
+//if($this.css('visibility') =='hidden') weight=0; //if($this.css('display') == 'none') weight=0;
 prices.push({
 el: this,
 text: text,
-weight: weight
+weight: weight,
+diff_top: diff_top_sv,
+distance: Math.sqrt(diff_top_sv*diff_top_sv+diff_left_sv*diff_left_sv)
 });
 });
+prices.sort(function(a,b){ return a.distance-b.distance; });
+
+max = Math.min(prices.lenght,50);
+max=10;
+myi=0;
+while (myi < max )
+ {
+  if (prices[myi].diff_top < 0.0)
+	  {
+	  prices[myi].weight = prices[myi].weight + (myi+1) * Math.pow(2,max-myi);
+	  
+	  }
+ //if (prices[myi].diff_top<0) prices[myi].weight = prices[myi].weight +1000;
+  myi++;
+ }
 prices.sort(function(a,b){ return b.weight-a.weight; });
-//if(prices[0]) amount = number_regex.exec(prices[0].text);
-if(prices[0]) amount = number_regex.exec(distances[0].text);
+if(prices[0]) amount = number_regex.exec(prices[0].text);
 if(amount){
  var i=0, cur;
  amount = amount[0];
- //amount = shared_dom_prices[0];
  while(!currency){
   cur = currencies[i];
   if(prices[0].text.substr(0, cur.length) == cur || prices[0].text.substr(cur.length*-1) == cur || i == currencies.length-1){

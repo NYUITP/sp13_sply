@@ -29,17 +29,17 @@ var countLinks = function(myimgurl) {
   var get_price= function($img){
 var jQuery = $;
 var currencies = [
-'EUR','�',
-'GBP','�',
-'JPY','�',
+'EUR','â‚¬',
+'GBP','Â£',
+'JPY','Â¥',
 'CAD','C$',
 'AUD','A$',
 'USD','$' // this needs to be last
 ],
 cur_sym_to_abbrv_map = {
-'�':'EUR',
-'�':'GBP',
-'�':'JPY',
+'â‚¬':'EUR',
+'Â£':'GBP',
+'Â¥':'JPY',
 'C$':'CAD',
 'A$':'AUD',
 '$':'USD'
@@ -68,38 +68,32 @@ if( // exclude if:
 ){
 return false;
 } else {
-      var text = jQuery(element).text();
-      if(!regex_loose.exec(text)){
-       return false;
-      } 
-      else {
-          var n = element.childNodes.length;
-          if(n === 1 && element.childNodes[0].nodeType === 3){
-          elements.push(element);
-          return true;
-          } 
-          else if(regex_exact.exec(text)){
-               elements.push(element);
-               return true;
-               } 
-               else {
-                  var state = false;
-                  for(var i = 0; i < n; i++){
-                   var child = element.childNodes[i];
-                    if(child.nodeType === 1){
-                     state = walk(child) || state ? true : false;
-                    }
-                  }
-                 if(!state){
-                  elements.push(element);
-                  return true;
-                 } else {
-                   return state;
-                 }
-             }
-          }
-      }
-  } //End of walk() 
+var text = jQuery(element).text();
+if(!regex_loose.exec(text)){
+return false;
+} else {
+var n = element.childNodes.length;
+if(n === 1 && element.childNodes[0].nodeType === 3){
+elements.push(element);
+return true;
+} else if(regex_exact.exec(text)){
+elements.push(element);
+return true;
+} else {
+var state = false;
+for(var i = 0; i < n; i++){
+var child = element.childNodes[i];
+if(child.nodeType === 1){
+state = walk(child) || state ? true : false;
+}
+}
+if(!state){
+elements.push(element);
+return true;
+} else {
+return state;
+}
+}}}} //End of walk()
 }, //end of find_with_regex
 find_font_size = function(element){
 var n, size, max_size = 0;
@@ -143,7 +137,6 @@ shared_dom_prices = [],
 img_offset = $img.offset(),
 img_center = {top: img_offset.top+$img.height()/2, left: img_offset.left+$img.width()/2};
 // Check for prices that are within a DOM element shared by the img
-//node = false;
 node = find_with_regex($img.closest(":contains_numbers"))[0];
 if(node)
 {
@@ -173,12 +166,6 @@ distances.sort(function(a,b){ return a.distance-b.distance; });
 $prices.each(function(){
 var $this = jQuery(this),
 weight = 0,
-//
-offset_sv = $this.offset(),
-center_sv = {top: offset_sv.top+$this.height()/2, left: offset_sv.left+$this.width()/2},
-diff_top_sv = img_center.top - center_sv.top,
-diff_left_sv = img_center.left - center_sv.left;
-// 
 font_size = find_font_size($this[0]),
 text = jQuery.trim(money_regex.exec($this.text())[0]);
 // Is near the image
@@ -195,22 +182,17 @@ if($this.css('font-weight') == 'bold') weight++;
 if($this.css('text-decoration') == 'line-through') weight-=10;
 // Has a larger font
 if(font_size > body_font_size){
-weight += font_size - body_font_size + 1;
+weight *= font_size - body_font_size + 1;
 } else {
 weight -= body_font_size - font_size;
 }
 // Weighting - add points for the following:
 // Is near the image
-var i = 0, max = Math.min(distances.length + 1, 100);
+var i = 0, max = Math.min(distances.length + 1, 5);
 while(i < max-1){
-if(distances[i].text == text || diff_top_sv < 0) weight = weight*(max-i)*(max-i)*(max-i)+10;
-//if (text.indexOf(distances[i].text) > -1 || diff_top_sv < 0) weight = weight*(max-i)*(max-i)*(max-i)+10;
+if(distances[i].text == text) weight *= (max-i);
 i++;
-
 }
-//if($this.css('visibility') =='hidden') weight=0;
-//if($this.css('display') == 'none') weight=0;
-
 prices.push({
 el: this,
 text: text,
@@ -218,12 +200,10 @@ weight: weight
 });
 });
 prices.sort(function(a,b){ return b.weight-a.weight; });
-//if(prices[0]) amount = number_regex.exec(prices[0].text);
-if(prices[0]) amount = number_regex.exec(distances[0].text);
+if(prices[0]) amount = number_regex.exec(prices[0].text);
 if(amount){
  var i=0, cur;
  amount = amount[0];
- //amount = shared_dom_prices[0];
  while(!currency){
   cur = currencies[i];
   if(prices[0].text.substr(0, cur.length) == cur || prices[0].text.substr(cur.length*-1) == cur || i == currencies.length-1){
@@ -258,7 +238,6 @@ var myi = 0;
 while(myi< $myimgs.length)
 {
 if (myimgurl.indexOf($myimgs[myi].src)>-1 && $myimgs[myi].width >= 100 && $myimgs[myi].height >=100)
-//if ($myimgs[myi].src == myimgurl)
 {
   answers= get_price($($myimgs[myi]));
   return ('{"price": "' + answers.amount + '" ,"currency": "' + answers.currency +  '"}');
