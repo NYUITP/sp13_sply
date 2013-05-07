@@ -29,17 +29,17 @@ var countLinks = function(myimgurl) {
   var get_price= function($img){
 var jQuery = $;
 var currencies = [
-'EUR','Û',
-'GBP','£',
-'JPY','´',
+'EUR','â‚¬',
+'GBP','Â£',
+'JPY','Â¥',
 'CAD','C$',
 'AUD','A$',
 'USD','$' // this needs to be last
 ],
 cur_sym_to_abbrv_map = {
-'Û':'EUR',
-'£':'GBP',
-'´':'JPY',
+'â‚¬':'EUR',
+'Â£':'GBP',
+'Â¥':'JPY',
 'C$':'CAD',
 'A$':'AUD',
 '$':'USD'
@@ -223,6 +223,7 @@ if(prices[0]) amount = number_regex.exec(distances[0].text);
 if(amount){
  var i=0, cur;
  amount = amount[0];
+ //amount = shared_dom_prices[0];
  while(!currency){
   cur = currencies[i];
   if(prices[0].text.substr(0, cur.length) == cur || prices[0].text.substr(cur.length*-1) == cur || i == currencies.length-1){
