@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
-import NYUXpath
-import NYUschema
+#import NYUXpath
+#import NYUschema
 import httplib
 import urlparse
 import json
@@ -20,7 +20,7 @@ if __name__=="__main__":
    (weburl,imgurl,price,currency)=line.split('\t')
    #ans1= json.loads(NYUschema.get_solution(weburl))
    #ans2= json.loads(NYUXpath.main_process(weburl,imgurl))
-   casperstring= ["casperjs", "webcrawlerv8+9.js" , weburl,imgurl.rstrip()]  
+   casperstring= ["casperjs", "webcrawlerv89.js" , weburl,imgurl.rstrip()]  
    returnval= Popen(casperstring,stdout=PIPE) 
    ans3 = json.loads(returnval.stdout.readline())
    if ans3:

@@ -135,6 +135,7 @@ if(node)
  $prices = jQuery(node, money_string);
  $prices.each(function(){
  var text = jQuery.trim(money_regex.exec(jQuery(this).text())[0]);
+ //text = text.match(number_string);
   shared_dom_prices.push(text);
   });
 }
@@ -201,6 +202,8 @@ while (myi < max )
  }
 prices.sort(function(a,b){ return b.weight-a.weight; });
 if(prices[0]) amount = number_regex.exec(prices[0].text);
+if (flag == true)
+amount = number_regex.exec(shared_dom_prices[0]);
 if(amount){
  var i=0, cur;
  amount = amount[0];
@@ -212,8 +215,7 @@ if(amount){
  i++;
  }
 }
-if (flag == true)
-amount = shared_dom_prices[0];
+
 return({
 amount: amount,
 currency: currency
