@@ -1,0 +1,24 @@
+Title: Amazing web spider
+Problem: Find dynamic price information in unstructured web sites
+Starting: SV, XS, QZ
+Tool Used: JS, JQ, PY
+Produce by SVPPLY
+
+
+
+Poster 2
+Example:
+Solutions:
+    BOLD
+    Distance
+    Price below the image
+    Font Size
+    list or single
+    Tester module
+    data mining
+    
+Accuracy Rate:
+64% Original
+70% Distance
+80%~83% Current
+
