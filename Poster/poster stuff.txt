@@ -17,8 +17,12 @@ Solutions:
     Tester module
     data mining
 
+Evaluation of our performance
 Accuracy Rate:
 64% Original
 70% Distance
 80%~83% Current
+
+Product img example
+
 
