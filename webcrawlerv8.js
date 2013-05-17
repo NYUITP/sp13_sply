@@ -201,8 +201,7 @@ distance: Math.sqrt(diff_top_sv*diff_top_sv+diff_left_sv*diff_left_sv)
 });
 prices.sort(function(a,b){ return a.distance-b.distance; });
 
-max = Math.min(prices.lenght,50);
-max=10;
+max = Math.min(prices.length,50);
 myi=0;
 while (myi < max )
  {

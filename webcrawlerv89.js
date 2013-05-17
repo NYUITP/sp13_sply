@@ -10,20 +10,21 @@ var myimg_url = casper.cli.get(1);
 var countLinks = function(myimgurl) {
    var $myimgs = $('img');
   
-  var get_price= function($img,flag){
+var get_price= function($img,flag){
 var jQuery = $;
 var currencies = [
-'EUR','â‚¬',
-'GBP','Â£',
-'JPY','Â¥',
+'EUR','€',
+'Euro','€',
+'GBP','£',
+'JPY','¥',
 'CAD','C$',
 'AUD','A$',
 'USD','$' // this needs to be last
 ],
 cur_sym_to_abbrv_map = {
-'â‚¬':'EUR',
-'Â£':'GBP',
-'Â¥':'JPY',
+'€':'EUR',
+'£':'GBP',
+'¥':'JPY',
 'C$':'CAD',
 'A$':'AUD',
 '$':'USD'
@@ -157,7 +158,9 @@ diff_left_sv = img_center.left - center_sv.left;
 font_size = find_font_size($this[0]),
 text = jQuery.trim(money_regex.exec($this.text())[0]);
 // Is near the image
-if(shared_dom_prices.indexOf(text) > -1) weight+=6;
+
+if(shared_dom_prices.indexOf(text) > -1 && flag == true) weight+=16;
+//if (shared_dom_prices.indexOf(text) > -1 && flag != true) weight+=6;
 // Is less than the max amount
 if(number_regex.exec(text) < max_amount) weight++;
 // Has a currency unit
@@ -187,8 +190,9 @@ distance: Math.sqrt(diff_top_sv*diff_top_sv+diff_left_sv*diff_left_sv)
 });
 prices.sort(function(a,b){ return a.distance-b.distance; });
 
+if (flag == true){
 max = Math.min(prices.length,50);
-max=10;
+
 myi=0;
 while (myi < max )
  {
@@ -200,10 +204,10 @@ while (myi < max )
  //if (prices[myi].diff_top<0) prices[myi].weight = prices[myi].weight +1000;
   myi++;
  }
+ }
 prices.sort(function(a,b){ return b.weight-a.weight; });
 if(prices[0]) amount = number_regex.exec(prices[0].text);
-if (flag == true)
-amount = number_regex.exec(shared_dom_prices[0]);
+
 if(amount){
  var i=0, cur;
  amount = amount[0];
@@ -220,7 +224,7 @@ return({
 amount: amount,
 currency: currency
 });
-};
+}; //end of get_price
 //var myobjeto = $($myimgs[0])
 //var myoffset = myobjeto.offset(); 
 var answers;
@@ -232,16 +236,10 @@ var minheight = 0;
 var maxheight = 0;
 var samecount = 0;
 var flag;
-if(myimgurl.indexOf('?')>-1){
-	var temp = myimgurl.split("?");
-	myimgurl = temp[0];}
-	
-while(myj<($myimgs.length-1))
+
+while(myj<$myimgs.length)
 {
-	if($myimgs[myj].src.indexOf('?')>-1){
-		var temp = $myimgs[myj].src.split("?");
-		$myimgs[myj].src = temp[0];
-	}
+	
 	if (myimgurl.indexOf($myimgs[myj].src)>-1){
 		width = $myimgs[myj].width;
 		height = $myimgs[myj].height;
@@ -254,7 +252,7 @@ while(myj<($myimgs.length-1))
 	myj ++;
 }
 var i=0;
-while(i<($myimgs.length-1))
+while(i<$myimgs.length)
 {
 	if(width < 800 && $myimgs[i].width == width && $myimgs[i].height > minheight && $myimgs[i].height < maxheight)
 	//if(width < 800 && $myimgs[i].width == width && $myimgs[i].height == height)
@@ -279,7 +277,6 @@ return '{"price": "-1", "currency": ""}';
 
 };
 
-
 // removing default options passed by the Python executable
 casper.cli.drop("cli");
 casper.cli.drop("casper-path");
@@ -290,8 +287,6 @@ if (casper.cli.args.length === 0 && Object.keys(casper.cli.options).length === 0
         .exit(1)
     ;
 }
-
-
 
 casper.start(myurl, function() {
  //   this.echo(this.getCurrentUrl()); 

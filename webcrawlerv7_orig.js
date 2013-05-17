@@ -29,17 +29,17 @@ var countLinks = function(myimgurl) {
   var get_price= function($img){
 var jQuery = $;
 var currencies = [
-'EUR','â‚¬',
-'GBP','Â£',
-'JPY','Â¥',
+'EUR','�',
+'GBP','�',
+'JPY','�',
 'CAD','C$',
 'AUD','A$',
 'USD','$' // this needs to be last
 ],
 cur_sym_to_abbrv_map = {
-'â‚¬':'EUR',
-'Â£':'GBP',
-'Â¥':'JPY',
+'�':'EUR',
+'�':'GBP',
+'�':'JPY',
 'C$':'CAD',
 'A$':'AUD',
 '$':'USD'

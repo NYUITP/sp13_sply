@@ -1,16 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
-import NYUXpath
-import NYUschema
 import httplib
 import urlparse
 import json
 from subprocess import Popen, PIPE
-
+import sys
 
 if __name__=="__main__":
+  
  #myfile = open('schema_urls.txt')
- myfile = open('JsRunner_urls6.txt')
+ myfile = open(sys.argv[2])
  #myfile = open('schemaogp_urls2.txt')
  data = myfile.readlines()
  myfile.close()
@@ -20,7 +19,7 @@ if __name__=="__main__":
    (weburl,imgurl,price,currency)=line.split('\t')
    #ans1= json.loads(NYUschema.get_solution(weburl))
    #ans2= json.loads(NYUXpath.main_process(weburl,imgurl))
-   casperstring= ["/Users/sebastian/Downloads/n1k0-casperjs-bc0da16/bin/casperjs", "webcrawlerv9.js" , weburl,imgurl.rstrip()]  
+   casperstring= ["/Users/sebastian/Downloads/n1k0-casperjs-bc0da16/bin/casperjs", sys.argv[1] , weburl,imgurl.rstrip()]  
    returnval= Popen(casperstring,stdout=PIPE) 
    ans3 = json.loads(returnval.stdout.readline())
    if ans3:

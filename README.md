@@ -1,32 +1,64 @@
-sp13_sply
-=========
-README
-Version: Feb 21, 2013, 1:30am
+NYU
+Svpply
+###################################
+ITP - Project Webcrawler for Svpply
+##################################
 
-Spring Start: Feb 20, 2013
-Spring End: Feb 26, 2013
+###################################
+Team members:
+Xiaoyu Shan
+Qin Zheng
+Sebastian Vasquez
+##################################
+ 
 
-Files:
+We took as base code the get_price function of the bookmarklet that was available on march 2013.
 
-validated_products.json
-Contains values that have been validated, and are thought to be correct.
+#################################
+LIST OF FILES:
+#################################
+webcrawlerv7_orig.js: Original version of webcrawler using get_price function.
 
-profilebuilderv5.py
-Takes validated_products.json and creates created_profiles.json
-./profilebuilderv5.py > created_profiles.json
+webcrawlerv89.js: Final CASPERJS script that takes as input a product's website and image url. 
+                  Script contains technology to differentiate between single product pages and product list pages.
+		  Output is a string in JSON format.
 
-created_profiles.json
-Contains profile definitions for domains.
+webcrawlerv8.js:  CASPERJS script that works only with product list pages. 
+ 		  Output is a string in JSON format.  
 
-unvalidated_products.json
-Contains products from whom price needs to be validated.
+matchenginev7.py: Testing tool that takes as input a CASPERJS script and a test case file.
+		  It has hardcoded the CASPERJS directory.(PLEASE CHANGE TO CURRENT ENVIRONMENT)
 
-product_validator.py
-Very basic webcrawler that takes data that is stored in Svpply database and compares against what is currently on the web and being extracted by profile
+################################
+SAMPLE RUNS
+################################
+a. Single test run:
+$ export CASPERJS=/Users/sebastian/Downloads/n1k0-casperjs-bc0da16/bin/casperjs 
+$ $CASPERJS webcrawlerv89.js 'http://www.manufactum.com/shirts-tops-c193634/' 'http://images.manufactum.de/manufactum/thumbs_188/72612_1.jpg'
+{"price": "78,00" ,"currency": "Euro"} [WHICH IS CORRECT] 
 
-Sample output:
-Sebastians-MacBook-Pro-3:ITP sebastian$ ./product_validator.py 
-{u'www.urbanoutfitters.com': u'/html[1]/body/div[2]/div[2]/div[1]/h2[2]/span[1]/text()', u'www.manufactum.com': u'/html/body/div/div[2]/div[1]/div[2]/form/div[3]/div[2]/fieldset/div[1]/p/strong/span/text()', u'needsupply.com': u'/html/body/div[2]/form/div/div/div[2]/h3/span/text()'}
-URL: http://needsupply.com/mens/japanese-shuttle-loom-chambray.html, DBPrice: $210.00, CurrentPrice: ['$210.00']
-URL: http://needsupply.com/mens/tapered-selvage-chino.html, DBPrice: $179.00, CurrentPrice: ['$179.00']
-URL: http://www.manufactum.com/bruetting-cross-country-running-shoe-p1401887/, DBPrice: $100-200, CurrentPrice: ['168,00']
+$ $CASPERJS webcrawlerv89.js 'http://openingceremony.us/products.asp?menuid=2&catid=24' 'http://images1.openingceremony.us/pimg/menu_82466_1.jpg'
+{"price": "450.00" ,"currency": "USD"} [WHICH IS CORRECT]
+
+
+b. Multiple tests run:
+
+$ ./matchEnginev7.py webcrawlerv89.js JsRunner_urls9.txt 
+SITE:http://openingceremony.us/products.asp?menuid=2&catid=24	ScriptPrice: 450.00	DBPrice:450.00	Correct:Yes
+SITE:http://www.madewell.com/newarrivals/dressesskirts.jsp	ScriptPrice: 155.00	DBPrice:155.00	Correct:Yes
+SITE:http://www.mrporter.com/product/334018	ScriptPrice: 475	DBPrice:475	Correct:Yes
+SITE:http://www.gap.com/browse/category.do?cid=94663	ScriptPrice: 44.95	DBPrice:44.95	Correct:Yes
+SITE:http://www.endclothing.co.uk/department/blazers	ScriptPrice: 285.00	DBPrice:285.00	Correct:Yes
+SITE:http://www.freepeople.com/clothes-shops-fp-one/	ScriptPrice: 268.00	DBPrice:268.00	Correct:Yes
+SITE:http://needsupply.com/mens/outerwear?limit=40	ScriptPrice: 244.00	DBPrice:244.00	Correct:Yes
+SITE:http://www.manufactum.com/shirts-tops-c193634/	ScriptPrice: 78,00	DBPrice:78,00	Correct:Yes
+Accuracy rate of total set: 1.00
+Accuracy rate of found images: 1.00
+
+ 
+##################################
+KNOWN ISSUES
+##################################
+
+1. Many websites change the image url daily.
+2. Some webites "hide" products until they are visible. We recommend using CASPERJS functionality to scroll down to end of page.
